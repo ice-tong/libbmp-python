@@ -11,15 +11,20 @@ COLOR_DATA_MAP = {
 
 class BMPFile:
 
-    def __init__(self, bmp_fname):
+    def __init__(self, bmp_fheader=None, bmp_iheader=None,
+                 color_data=None):
 
-        self.bmp_fname = bmp_fname
+        if bmp_fheader is None:
+            self.bmp_fheader = BITMAPFILEHEADER()
+        else:
+            self.bmp_fheader = bmp_fheader
         
-        self.bmp_fheader = BITMAPFILEHEADER()
-        self.bmp_iheader = BITMAPINFOHEADER()
-        self.color_data = None
+        if bmp_iheader is None:
+            self.bmp_iheader = BITMAPINFOHEADER()
+        else:
+            self.bmp_fheader = bmp_fheader
 
-        self._read_bmp()
+        self.color_data = color_data
 
     @property
     def size(self):
@@ -39,9 +44,9 @@ class BMPFile:
     # I/O method.
     #
 
-    def _read_bmp(self):
+    def read_bmp(self, bmp_fname):
 
-        with open(self.bmp_fname, "rb") as f:
+        with open(bmp_fname, "rb") as f:
 
             buffers = f.read(self.bmp_fheader.byte_size)
             self.bmp_fheader.read_from_buffers(buffers)
