@@ -22,7 +22,7 @@ class BMPFile:
         if bmp_iheader is None:
             self.bmp_iheader = BITMAPINFOHEADER()
         else:
-            self.bmp_fheader = bmp_fheader
+            self.bmp_iheader = bmp_iheader
 
         self.color_data = color_data
 
@@ -39,6 +39,14 @@ class BMPFile:
         if self.color_data is None:
             return 0
         return len(self.color_data)
+    
+    def __copy__(self):
+        return self.__class__(
+            self.bmp_fheader.copy(), self.bmp_iheader.copy(),
+            self.color_data.copy()
+            )
+
+    copy = __copy__
 
     #
     # I/O method.

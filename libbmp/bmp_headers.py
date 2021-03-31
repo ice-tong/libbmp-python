@@ -19,6 +19,22 @@ class HEADERBase:
         for attr in self.__slots__:
             _byte_size += self._member_type_map[attr].byte_size
         return _byte_size
+    
+    def __copy__(self):
+        cls = self.__class__()
+        for attr in cls.__slots__:
+            value = getattr(self, attr)
+            setattr(cls, attr, value)
+        return cls
+    
+    copy = __copy__
+
+    def __str__(self, ishex=True):
+        members = []
+        for attr in self.__slots__:
+            value = getattr(self, attr)
+            members.append("%s=%s" % (attr, hex(value) if ishex else value))
+        return "<%s @ (%s)>" % (self.__class__.__name__, ", ".join(members))
 
     def read_from_buffers(self, buffers):
 
@@ -48,13 +64,6 @@ class HEADERBase:
             buffers += sim_ctype.to_bytes(value)
     
         return buffers
-
-    def __str__(self, ishex=True):
-        members = []
-        for attr in self.__slots__:
-            value = getattr(self, attr)
-            members.append("%s=%s" % (attr, hex(value) if ishex else value))
-        return "<%s @ (%s)>" % (self.__class__.__name__, ", ".join(members))
 
 
 class BITMAPFILEHEADER(HEADERBase):

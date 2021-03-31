@@ -16,6 +16,31 @@ class Pixel:
     def byte_size(self):
         return SimByte.byte_size * len(self.__slots__)
 
+    def __str__(self, ishex=True):
+        colors = []
+        for attr in self.__slots__:
+            color = getattr(self, attr)
+            colors.append(hex(color) if ishex else str(color))
+        return "(%s)" % ", ".join(colors)
+
+    def __len__(self):
+        return len(self.__slots__)
+    
+    def __getitem__(self, index):
+        return getattr(self, self.__slots__[index])
+    
+    def __setitem__(self, index, value):
+        setattr(self, self.__slots__[index], value)
+    
+    def __copy__(self):
+        cls = self.__class__()
+        for attr in cls.__slots__:
+            value = getattr(self, attr)
+            setattr(cls, attr, value)
+        return cls
+    
+    copy = __copy__
+
     def read_from_buffers(self, buffers):
 
         assert len(buffers) == self.byte_size, \
@@ -42,22 +67,6 @@ class Pixel:
             buffers += SimByte.to_bytes(value)
 
         return buffers
-    
-    def __str__(self, ishex=True):
-        colors = []
-        for attr in self.__slots__:
-            color = getattr(self, attr)
-            colors.append(hex(color) if ishex else str(color))
-        return "(%s)" % ", ".join(colors)
-
-    def __len__(self):
-        return len(self.__slots__)
-    
-    def __getitem__(self, index):
-        return getattr(self, self.__slots__[index])
-
-    def __setitem__(self, index, value):
-        setattr(self, self.__slots__[index], value)
 
 
 class Pixel16(Pixel):
@@ -94,6 +103,24 @@ class ColorTrue:
         pixel_num = abs(self.height * self.width)
         pad_byte_size = self.width_pad_size * self.height
         return self.pixel().byte_size * pixel_num + pad_byte_size
+    
+    def __str__(self):
+        return "<%s Color Data @ (%s, %s)>" % (
+            self.__class__.__name__, self.width, self.height)
+    
+    def __getitem__(self, index):
+        return self.data[index]
+    
+    def __copy__(self):
+        cls = self.__class__(self.width, self.height)
+        for row_idx in range(self.height):
+            row = []
+            for col_idx in range(self.width):
+                row.append(self.data[row_idx][col_idx].copy())
+            cls.data.append(row)
+        return cls
+    
+    copy = __copy__
 
     def read_from_buffers(self, buffers):
  
@@ -129,14 +156,7 @@ class ColorTrue:
 
             buffers += bytes(self.width_pad_size)
         
-        return buffers 
-    
-    def __str__(self):
-        return "<%s Color Data @ (%s, %s)>" % (
-            self.__class__.__name__, self.width, self.height)
-    
-    def __getitem__(self, index):
-        return self.data[index]
+        return buffers
 
 
 class ColorTrue24(ColorTrue):
