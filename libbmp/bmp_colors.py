@@ -49,6 +49,9 @@ class Pixel:
             color = getattr(self, attr)
             colors.append(hex(color) if ishex else str(color))
         return "(%s)" % ", ".join(colors)
+
+    def __len__(self):
+        return len(self.__slots__)
     
     def __getitem__(self, index):
         return getattr(self, self.__slots__[index])
