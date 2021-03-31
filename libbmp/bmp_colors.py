@@ -1,4 +1,3 @@
-
 from .sim_ctype import SimByte
 
 
@@ -61,21 +60,8 @@ class Pixel16(Pixel):
     def byte_size(self):
         return 2
     
-    # def read_from_buffers(self, buffers):
-        
-    #     assert len(buffers) == self.byte_size, \
-    #         "Except bytes length %s, get %s."% (self.byte_size, len(buffers))
-
-    #     buffer_idx = 0
-
-    #     for attr in self.__slots__:
-
-    #         buffer = buffers[buffer_idx:buffer_idx+SimByte.byte_size]
-    #         value = sim_ctype.from_bytes(buffer)
-
-    #         setattr(self, attr, value)
-
-    #         buffer_idx += SimByte.byte_size
+    def read_from_buffers(self, buffers):
+        raise NotImplementedError()
 
 
 class Pixel24(Pixel):
@@ -126,7 +112,7 @@ class ColorTrue:
     
     def to_buffers(self):
 
-        # NOTE: Since the `+=` op of bytes obejct is so slow, use bytearray.
+        # NOTE: Since the speed of `+=` op between bytes obejct is too slow, use bytearray.
         buffers = bytearray(0)
 
         for row_idx in range(self.height):
