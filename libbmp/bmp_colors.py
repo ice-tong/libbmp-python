@@ -56,6 +56,9 @@ class Pixel:
     def __getitem__(self, index):
         return getattr(self, self.__slots__[index])
 
+    def __setitem__(self, index, value):
+        setattr(self, self.__slots__[index], value)
+
 
 class Pixel16(Pixel):
 
