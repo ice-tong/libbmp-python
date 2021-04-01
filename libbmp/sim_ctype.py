@@ -13,9 +13,9 @@ class SimCTypeBase:
     def from_bytes(self, buffer: bytes):
         return int.from_bytes(
             buffer, byteorder=self.endness, signed=self.signed)
-    
+
     @classmethod
-    def to_bytes(self, value):
+    def to_bytes(self, value: int):
         return int.to_bytes(
             value, self.byte_size, self.endness, signed=self.signed)
 

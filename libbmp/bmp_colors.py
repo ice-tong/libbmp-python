@@ -11,7 +11,7 @@ class Pixel:
     def __init__(self):
         for attr in self.__slots__:
             setattr(self, attr, None)
-    
+
     @property
     def byte_size(self):
         return SimByte.byte_size * len(self.__slots__)
@@ -25,20 +25,20 @@ class Pixel:
 
     def __len__(self):
         return len(self.__slots__)
-    
+
     def __getitem__(self, index):
         return getattr(self, self.__slots__[index])
-    
+
     def __setitem__(self, index, value):
         setattr(self, self.__slots__[index], value)
-    
+
     def __copy__(self):
         cls = self.__class__()
         for attr in cls.__slots__:
             value = getattr(self, attr)
             setattr(cls, attr, value)
         return cls
-    
+
     copy = __copy__
 
     def read_from_buffers(self, buffers):
@@ -56,7 +56,7 @@ class Pixel:
             setattr(self, attr, value)
 
             buffer_idx += SimByte.byte_size
-    
+
     def to_buffers(self):
 
         # NOTE: Since the `+=` op of bytes obejct is so slow, use bytearray.
@@ -74,7 +74,7 @@ class Pixel16(Pixel):
     @property
     def byte_size(self):
         return 2
-    
+
     def read_from_buffers(self, buffers):
         raise NotImplementedError()
 
@@ -103,14 +103,14 @@ class ColorTrue:
         pixel_num = abs(self.height * self.width)
         pad_byte_size = self.width_pad_size * self.height
         return self.pixel().byte_size * pixel_num + pad_byte_size
-    
+
     def __str__(self):
         return "<%s Color Data @ (%s, %s)>" % (
             self.__class__.__name__, self.width, self.height)
-    
+
     def __getitem__(self, index):
         return self.data[index]
-    
+
     def __copy__(self):
         cls = self.__class__(self.width, self.height)
         for row_idx in range(self.height):
@@ -119,11 +119,11 @@ class ColorTrue:
                 row.append(self.data[row_idx][col_idx].copy())
             cls.data.append(row)
         return cls
-    
+
     copy = __copy__
 
     def read_from_buffers(self, buffers):
- 
+
         assert len(buffers) == self.byte_size, \
             "Except bytes length %s, get %s." % (len(buffers), self.byte_size)
 
@@ -139,10 +139,10 @@ class ColorTrue:
                 pixel.read_from_buffers(buffer)
                 row.append(pixel)
                 buffer_idx += pixel.byte_size
-            
+
             self.data.append(row)
             buffer_idx += self.width_pad_size
-    
+
     def to_buffers(self):
 
         # NOTE: Since the speed of `+=` op between bytes obejct is too slow, use bytearray.
@@ -155,7 +155,7 @@ class ColorTrue:
                 buffers += pixel.to_buffers()
 
             buffers += bytes(self.width_pad_size)
-        
+
         return buffers
 
 

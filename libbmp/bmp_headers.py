@@ -26,7 +26,7 @@ class HEADERBase:
             value = getattr(self, attr)
             setattr(cls, attr, value)
         return cls
-    
+
     copy = __copy__
 
     def __str__(self, ishex=True):
@@ -62,7 +62,7 @@ class HEADERBase:
             value = getattr(self, attr)
             sim_ctype: "SimCTypeBase" = self._member_type_map[attr]
             buffers += sim_ctype.to_bytes(value)
-    
+
         return buffers
 
 
@@ -84,7 +84,7 @@ class BITMAPINFOHEADER(HEADERBase):
         "biCompression", "biSizeImage", "biXPelsPerMeter",
         "biYPelsPerMeter", "biClrUsed", "biClrImportant"
         ]
-    
+
     _member_type_map = {
         "biSize": SimDWord, "biWidth": SimDWord,
         "biHeight": SimDWord, "biPlanes": SimWord,

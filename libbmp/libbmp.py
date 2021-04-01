@@ -34,12 +34,12 @@ class BMPFile:
         if self.color_data is None:
             return None
         return self.color_data[index]
-    
+
     def __len__(self):
         if self.color_data is None:
             return 0
         return len(self.color_data)
-    
+
     def __copy__(self):
         return self.__class__(
             self.bmp_fheader.copy(), self.bmp_iheader.copy(),
@@ -52,9 +52,9 @@ class BMPFile:
     # I/O method.
     #
 
-    def read_bmp(self, bmp_fname):
+    def read_bmp(self, bmp_fpath):
 
-        with open(bmp_fname, "rb") as f:
+        with open(bmp_fpath, "rb") as f:
 
             buffers = f.read(self.bmp_fheader.byte_size)
             self.bmp_fheader.read_from_buffers(buffers)
@@ -70,7 +70,7 @@ class BMPFile:
             if bit_count <= 8:
                 # There must have used a color palette.
                 raise NotImplementedError("There must have used a color palette.")
-            
+
             if self.bmp_iheader.biCompression != 0:
                 # Unsupport compression method.
                 raise NotImplementedError(
@@ -93,9 +93,9 @@ class BMPFile:
 
             assert f.read() == b'', "Seems to be something worng..."
 
-    def save_bmp(self, save_bmp_fname):
+    def save_bmp(self, save_bmp_fpath):
 
-        with open(save_bmp_fname, "wb") as f:
+        with open(save_bmp_fpath, "wb") as f:
 
             buffers = self.bmp_fheader.to_buffers()
             f.write(buffers)
@@ -106,7 +106,7 @@ class BMPFile:
             if self.bmp_iheader.biBitCount <= 8:
                 # There must have used a color palette.
                 raise NotImplementedError("There must have used a color palette.")
-            
+
             if self.bmp_iheader.biCompression != 0:
                 # Unsupport compression method.
                 raise NotImplementedError(

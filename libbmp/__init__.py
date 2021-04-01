@@ -8,7 +8,7 @@ from .bmp_colors import *
 from .bmp_headers import *
 
 
-def load_bmp(bmp_fname):
+def load_bmp(bmp_fpath):
     bmp = BMPFile()
-    bmp.read_bmp(bmp_fname)
+    bmp.read_bmp(bmp_fpath)
     return bmp
